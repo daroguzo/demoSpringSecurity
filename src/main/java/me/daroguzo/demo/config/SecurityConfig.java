@@ -1,5 +1,7 @@
 package me.daroguzo.demo.config;
 
+import me.daroguzo.demo.account.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,6 +25,9 @@ import java.security.Security;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    AccountService accountService;
 
     // in memory
 //    @Override
@@ -66,6 +71,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         httpServletResponse.sendRedirect("/access-denied");
                     }
                 });
+
+        http.rememberMe()
+                .userDetailsService(accountService)
+                .key("remember-me-sample");
 
         http.formLogin()
                 .loginPage("/login")
